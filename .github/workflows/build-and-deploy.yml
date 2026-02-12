@@ -8,6 +8,8 @@ on:
   # Runs on pushes targeting the default branch
   push:
     branches: ["develop"]
+    paths:
+      - 'src/**'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -22,7 +24,7 @@ permissions:
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   # Build job
@@ -95,3 +97,20 @@ jobs:
   #     - name: Deploy to GitHub Pages
   #       id: deployment
   #       uses: actions/deploy-pages@v4
+
+  # Copy job
+  copy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: date
+        run: |
+          echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+      - uses: tuftsrt/copy-to-branch@v1
+        with:
+          destination-branch: main
+          clear-destination: "true"
+          copy: |
+            dist/|
