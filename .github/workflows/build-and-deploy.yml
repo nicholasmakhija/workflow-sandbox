@@ -75,10 +75,14 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
       - name: Build artifact
         run: ${{ steps.detect-package-manager.outputs.runner }} yarn build
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      # - name: Upload artifact
+      #   uses: actions/upload-pages-artifact@v3
+      #   with:
+      #     path: ./out
+      - name: Show Folder Tree
+        uses: jaywcjlove/github-action-folder-tree@main
         with:
-          path: ./out
+          path: ./dist
 
   # Deployment job FIXME:
   # deploy:
