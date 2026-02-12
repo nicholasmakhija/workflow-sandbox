@@ -1,7 +1,9 @@
+import { HelloWorld } from '../HelloWorld';
+
 export const App = () => {
   return (
-    <div>
-      Workflow Sandbox
+    <div className="App">
+      <HelloWorld>Hello World</HelloWorld>
     </div>
   );
 };
