@@ -57,24 +57,39 @@ jobs:
           cache: ${{ steps.detect-package-manager.outputs.manager }}
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
-      # - name: Build artifact
-      #   run: ${{ steps.detect-package-manager.outputs.runner }} yarn build
-      - name: Build artifact in temp folder
-        run: |
-          BUILD_DIR="${{ runner.temp }}/dist"
-          mkdir -p $BUILD_DIR
-          ${{ steps.detect-package-manager.outputs.runner }} yarn build --outDir ${{ runner.temp }}/dist
+      
+      # NOTE: using temp directory
+      # - name: Build artifact in temp folder
+      #   run: |
+      #     BUILD_DIR="${{ runner.temp }}/dist"
+      #     mkdir -p $BUILD_DIR
+      #     ${{ steps.detect-package-manager.outputs.runner }} yarn build --outDir ${{ runner.temp }}/dist
+      # - name: Show Folder Tree
+      #   uses: jaywcjlove/github-action-folder-tree@main
+      #   with:
+      #     path: ${{ runner.temp }}/dist
+      # - name: Copy to main
+      #   uses: tuftsrt/copy-to-branch@v1
+      #   with:
+      #     destination-branch: main
+      #     # clear-destination: "true"
+      #     copy: |
+      #       ${{ runner.temp }}/dist/|
+
+      - name: Build artifact
+        run: ${{ steps.detect-package-manager.outputs.runner }} yarn build
       - name: Show Folder Tree
         uses: jaywcjlove/github-action-folder-tree@main
         with:
-          path: ${{ runner.temp }}/dist
-      - name: Copy to main
-        uses: tuftsrt/copy-to-branch@v1
+          path: /dist
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          destination-branch: main
-          # clear-destination: "true"
-          copy: |
-            ${{ runner.temp }}/dist/|
+          name: my-artifact
+          path: dist/
+          overwrite: "true"
+
+
 
   # Deployment job FIXME:
   # deploy:
@@ -89,19 +104,28 @@ jobs:
   #       uses: actions/deploy-pages@v4
 
   # Copy job
-  # copy:
-  #   needs: [build]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-  #     - id: date
-  #       run: |
-  #         echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
-  #     - uses: tuftsrt/copy-to-branch@v1
-  #       with:
-  #         destination-branch: main
-  #         clear-destination: "true"
-  #         copy: |
-  #           dist/|
+  copy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        # with:
+        #   fetch-depth: 0
+      # - id: date
+      #   run: |
+      #     echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+      # - uses: tuftsrt/copy-to-branch@v1
+      #   with:
+      #     destination-branch: main
+      #     clear-destination: "true"
+      #     copy: |
+      #       dist/|
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: my-artifact
+          path: dist
+      - name: Display structure of downloaded files
+        run: ls -R dist
