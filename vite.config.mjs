@@ -56,6 +56,7 @@ const resolvePath = (pathToResolve) =>
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: './',
   root: 'src',
   publicDir: resolvePath('dist'),
   mode: 'production',
