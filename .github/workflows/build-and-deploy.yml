@@ -133,3 +133,10 @@ jobs:
         uses: jaywcjlove/github-action-folder-tree@main
         with:
           path: ./dist
+      - name: Copy artifact to main branch
+        uses: tuftsrt/copy-to-branch@v1
+        with:
+          destination-branch: main
+          clear-destination: "true"
+          copy: |
+            dist/|
