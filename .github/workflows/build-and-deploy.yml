@@ -136,6 +136,8 @@ jobs:
         with:
           exclude: ".git|.husky"
           path: .
+      - name: Run git command
+        run: git log --pretty=oneline --abbrev-commit 5
       # - name: Copy artifact to main branch
       #   uses: tuftsrt/copy-to-branch@v1
       #   with:
