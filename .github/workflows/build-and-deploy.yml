@@ -63,9 +63,7 @@ jobs:
         run: |
           BUILD_DIR="${{ runner.temp }}/dist"
           mkdir -p $BUILD_DIR
-          echo "Building source into temp directory..." > $BUILD_DIR/build_log.txt
           ${{ steps.detect-package-manager.outputs.runner }} yarn build --outDir ${{ runner.temp }}/dist
-          cat $BUILD_DIR/build_log.txt
       - name: Show Folder Tree
         uses: jaywcjlove/github-action-folder-tree@main
         with:
