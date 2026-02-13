@@ -139,7 +139,7 @@ jobs:
       - name: Run git command
         run: |
           BRANCH_NAME=${{ github.event.inputs.branch_name || github.ref_name }}
-          git log $BRANCH_NAME --pretty=%s -n 5
+          git log $BRANCH_NAME -- --pretty=%s -n 5
       # - name: Copy artifact to main branch
       #   uses: tuftsrt/copy-to-branch@v1
       #   with:
