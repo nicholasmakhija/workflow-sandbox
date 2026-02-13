@@ -134,6 +134,7 @@ jobs:
       - name: Show Folder Tree
         uses: jaywcjlove/github-action-folder-tree@main
         with:
+          exclude: ".git|.husky"
           path: .
       # - name: Copy artifact to main branch
       #   uses: tuftsrt/copy-to-branch@v1
