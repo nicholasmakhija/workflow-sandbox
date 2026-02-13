@@ -137,7 +137,9 @@ jobs:
           exclude: ".git|.husky"
           path: .
       - name: Run git command
-        run: git log --pretty=%s -n 5 develop
+        run: |
+          BRANCH_NAME=${{ github.event.inputs.branch_name || github.ref_name }}
+          git log $BRANCH_NAME --pretty=%s -n 5
       # - name: Copy artifact to main branch
       #   uses: tuftsrt/copy-to-branch@v1
       #   with:
