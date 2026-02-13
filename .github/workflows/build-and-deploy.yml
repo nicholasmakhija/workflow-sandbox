@@ -68,6 +68,13 @@ jobs:
         uses: jaywcjlove/github-action-folder-tree@main
         with:
           path: ${{ runner.temp }}/dist
+      - name: Copy to main
+      - uses: tuftsrt/copy-to-branch@v1
+        with:
+          destination-branch: main
+          # clear-destination: "true"
+          copy: |
+            ${{ runner.temp }}/dist/|
 
   # Deployment job FIXME:
   # deploy:
