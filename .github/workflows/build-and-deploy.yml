@@ -37,7 +37,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - id: get_log
+      - name: Get last commit message
+        id: get_log
         run: |
           # Get last commit message
           MESSAGE=$(git log -1 --pretty=%s)
@@ -154,7 +155,7 @@ jobs:
       #     git log develop -- --pretty=%s -n 1
 
       - name: Get log_msg from build
-        run: echo "${{ needs.job1.outputs.log_msg }}"
+        run: echo "${{ needs.build.outputs.log_msg }}"
 
         # git log $BRANCH_NAME -- --pretty=%s -n 1
       # - name: Copy artifact to main branch
