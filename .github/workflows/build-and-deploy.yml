@@ -30,9 +30,21 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
+    outputs:
+      log_msg: ${{ steps.get_log.outputs.LOG_MSG }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: get_log
+        run: |
+          # Get last commit message
+          MESSAGE=$(git log -1 --pretty=%s)
+          # Store it in a step output (requires escaping for multi-line)
+          echo "LOG_MSG<<EOF" >> $GITHUB_OUTPUT
+          echo "$MESSAGE" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
       - name: Detect package manager
         id: detect-package-manager
         run: |
@@ -136,10 +148,14 @@ jobs:
         with:
           exclude: ".git|.husky"
           path: .
-      - name: Run git command
-        run: |
-          BRANCH_NAME=${{ github.event.inputs.branch_name || github.ref }}
-          git log develop -- --pretty=%s -n 1
+      # - name: Run git command
+      #   run: |
+      #     BRANCH_NAME=${{ github.event.inputs.branch_name || github.ref }}
+      #     git log develop -- --pretty=%s -n 1
+
+      - name: Get log_msg from build
+        run: echo "${{ needs.job1.outputs.log_msg }}"
+
         # git log $BRANCH_NAME -- --pretty=%s -n 1
       # - name: Copy artifact to main branch
       #   uses: tuftsrt/copy-to-branch@v1
