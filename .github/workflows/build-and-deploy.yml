@@ -81,7 +81,7 @@ jobs:
       - name: Show Folder Tree
         uses: jaywcjlove/github-action-folder-tree@main
         with:
-          path: /dist
+          path: ./dist
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -127,5 +127,9 @@ jobs:
         with:
           name: my-artifact
           path: dist
-      - name: Display structure of downloaded files
-        run: ls -R dist
+      # - name: Display structure of downloaded files
+      #   run: ls -R dist
+      - name: Show Folder Tree
+        uses: jaywcjlove/github-action-folder-tree@main
+        with:
+          path: ./dist
