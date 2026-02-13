@@ -69,7 +69,7 @@ jobs:
         with:
           path: ${{ runner.temp }}/dist
       - name: Copy to main
-      - uses: tuftsrt/copy-to-branch@v1
+        uses: tuftsrt/copy-to-branch@v1
         with:
           destination-branch: main
           # clear-destination: "true"
