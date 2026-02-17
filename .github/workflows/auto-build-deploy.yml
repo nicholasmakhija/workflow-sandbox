@@ -8,11 +8,5 @@ on:
       - 'src/**'
 
 jobs:
-  log-context:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Log context
-        run: echo "${{ github.repository_owner }}"
-
   call-build-deploy:
-    uses: nicholasmakhija/workflow-sandbox/.github/workflows/build-deploy.yml@main
+    uses: "${{ github.repository }}/.github/workflows/build-deploy.yml@main"
