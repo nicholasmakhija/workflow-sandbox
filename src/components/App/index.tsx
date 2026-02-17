@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { HelloWorld } from '../HelloWorld';
 
+import { AppRoot } from './elements';
+
 export const App = () => {
   useEffect(() => {
     // eslint-disable-next-line no-console
@@ -8,8 +10,8 @@ export const App = () => {
   }, []);
 
   return (
-    <div className="App">
+    <AppRoot>
       <HelloWorld>Hello World</HelloWorld>
-    </div>
+    </AppRoot>
   );
 };
