@@ -6,8 +6,9 @@ on:
       - develop
     paths:
       - 'src/**'
-
   workflow_dispatch:
+    description: 'Reason for manual run'
+    required: true
 
 permissions:
   contents: write
