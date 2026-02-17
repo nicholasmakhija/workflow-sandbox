@@ -8,13 +8,16 @@ on:
       - 'src/**'
 
 jobs:
-  log-context:
-    env:
-      REPO: ${{ github.repository }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Log local env
-        run: echo "$REPO"
+  # log-context:
+  #   env:
+  #     REPO: ${{ github.repository }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Log local env
+  #       run: echo "$REPO"
 
   call-build-deploy:
-    uses: nicholasmakhija/workflow-sandbox/.github/workflows/build-deploy.yml@main
+    env:
+      REPO: ${{ github.repository }}
+    # uses: nicholasmakhija/workflow-sandbox/.github/workflows/build-deploy.yml@main
+    uses: "$REPO/.github/workflows/build-deploy.yml@main"
