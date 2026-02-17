@@ -12,7 +12,7 @@ export const HelloWorld = ({
 }: HelloWorldProps) => {
   return (
     <HelloWorldRoot>
-      <HelloWorldTitle>
+      <HelloWorldTitle hasOutline>
         { children }
       </HelloWorldTitle>
     </HelloWorldRoot>
