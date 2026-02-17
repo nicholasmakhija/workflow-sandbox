@@ -18,4 +18,4 @@ concurrency:
 
 jobs:
   call-build-deploy:
-    uses: ./.github/workflows/build-deploy.yml
+    uses: nicholasmakhija/workflow-sandbox/.github/workflows/build-deploy.yml
