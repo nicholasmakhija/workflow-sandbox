@@ -7,15 +7,6 @@ on:
     paths:
       - 'src/**'
 
-permissions:
-  contents: write
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
 jobs:
   call-build-deploy:
     uses: nicholasmakhija/workflow-sandbox/.github/workflows/build-deploy.yml@main
