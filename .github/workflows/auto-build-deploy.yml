@@ -8,12 +8,5 @@ on:
       - 'src/**'
 
 jobs:
-  checkout-default-branch:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
   call-build-deploy:
-    needs: [checkout-default-branch]
     uses: nicholasmakhija/workflow-sandbox/.github/workflows/build-deploy.yml@main
