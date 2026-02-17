@@ -9,6 +9,7 @@ on:
 
 jobs:
   log-context:
+    runs-on: ubuntu-latest
     steps:
       - name: Log context
         run: echo "${{ github.repository_owner }}"
