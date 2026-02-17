@@ -1,10 +1,26 @@
-import styled from '@n3e/styled';
+import styled, { style, mq } from '@n3e/styled';
 
 const boxSizing = `
   *,
   :after,
   :before {
     box-sizing: border-box;
+  }
+`;
+
+const root = `
+  ${style.root} {
+    --ws-background-primary: #fff;
+    --ws-colour-content: #333;
+  }
+`;
+
+const rootDarkTheme = `
+  ${mq().prefersColorScheme('dark')} {
+    ${style.root} {
+      --ws-background-primary: #1d2125;
+      --ws-colour-content: #fff;
+    }
   }
 `;
 
@@ -30,8 +46,8 @@ const body = `
     font-size: 16px;
     line-height: 24px;
     font-family: Verdana, sans-serif;
-    color: #333;
-    background-color: #fff;
+    color: var(--ws-colour-content);
+    background-color: var(--ws-background-primary);
   }
 `;
 
@@ -39,6 +55,8 @@ export const AppRoot = styled
   .div()
   .withCSS(
     boxSizing,
+    root,
+    rootDarkTheme,
     html,
     htmlAndBody,
     body
