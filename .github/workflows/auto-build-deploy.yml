@@ -15,4 +15,5 @@ jobs:
         uses: actions/checkout@v4
 
   call-build-deploy:
+    needs: [checkout-default-branch]
     uses: nicholasmakhija/workflow-sandbox/.github/workflows/build-deploy.yml@main
