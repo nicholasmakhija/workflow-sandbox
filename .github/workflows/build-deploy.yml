@@ -8,8 +8,9 @@ on:
       - 'src/**'
   workflow_dispatch:
     inputs:
-      description: 'Reason for manual run'
-      required: true
+      reason:
+        description: 'Reason for manual run'
+        required: true
 
 permissions:
   contents: write
