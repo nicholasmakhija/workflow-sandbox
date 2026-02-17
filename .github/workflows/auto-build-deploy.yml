@@ -15,4 +15,4 @@ jobs:
   #       run: echo "${{ github.repository_owner }}"
 
   call-build-deploy:
-    uses: "nicholasmakhija/workflow-sandbox/.github/workflows/build-deploy.yml@main
+    uses: nicholasmakhija/workflow-sandbox/.github/workflows/build-deploy.yml@main
