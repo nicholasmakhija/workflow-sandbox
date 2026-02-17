@@ -7,8 +7,9 @@ on:
     paths:
       - 'src/**'
   workflow_dispatch:
-    description: 'Reason for manual run'
-    required: true
+    inputs:
+      description: 'Reason for manual run'
+      required: true
 
 permissions:
   contents: write
