@@ -9,4 +9,4 @@ on:
 
 jobs:
   call-build-deploy:
-    uses: nicholasmakhija/workflow-sandbox/.github/workflows/build-deploy.yml@main
+    uses: ${{ github.repository_owner }}/.github/workflows/build-deploy.yml@main
