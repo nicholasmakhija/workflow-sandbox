@@ -1,0 +1,85 @@
+name: Build and deploy to pages
+
+on:
+  push:
+    branches: ["develop"]
+    paths:
+      - 'src/**'
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install
+    
+      - name: Build artifact
+        run: yarn build
+
+      - name: Generate artifact name
+        id: generate_name
+        run: |
+          # Use 'date' command to format the current time
+          # The format string ensures a unique, sortable, and file-system-safe name
+          ARTIFACT_NAME="artifact-$(date +'%Y%m%d%H%M%S')"
+          echo "Generated artifact name: $ARTIFACT_NAME"
+          # Set the environment variable for subsequent steps
+          echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: dist/
+          overwrite: "true"
+
+  deploy:
+    needs: [build]
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          name: ${{ env.ARTIFACT_NAME }}
+          path: .
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "."
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
