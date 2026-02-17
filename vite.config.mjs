@@ -10,7 +10,7 @@ const computedStyleReload = () => ({
   name: 'vite-plugin-computed-style-reload',
   handleHotUpdate({ read, server }) {
     /** @type {Promise<string>} */(read()).then((content) => {
-      const computedStyles = content.match(/style.prop([^$]+?)]: \(/g) || [];
+      const computedStyles = content.match(/style.prop[^$]+?]: ?\(/g) || [];
 
       if (computedStyles.length) {
         server.ws.send({
