@@ -1,4 +1,7 @@
-import { HelloWorldRoot } from './elements';
+import {
+  HelloWorldRoot,
+  HelloWorldTitle
+} from './elements';
 
 type HelloWorldProps = {
   children: React.ReactNode;
@@ -9,11 +12,9 @@ export const HelloWorld = ({
 }: HelloWorldProps) => {
   return (
     <HelloWorldRoot>
-      <h1
-        style={{
-          color: 'hotpink'
-        }}
-      >{ children }</h1>
+      <HelloWorldTitle>
+        { children }
+      </HelloWorldTitle>
     </HelloWorldRoot>
   );
 };

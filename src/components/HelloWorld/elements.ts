@@ -9,3 +9,11 @@ export const HelloWorldRoot = styled.div({
   maxWidth: '1140px',
   height: '100%'
 });
+
+export const HelloWorldTitle = styled.h1({
+  margin: 0,
+  padding: 0,
+  color: '#fc0',
+  fontSize: '64px',
+  lineHeight: '72px'
+});
