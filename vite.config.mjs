@@ -1,15 +1,19 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-// import { sync } from 'glob';
+import { Buffer } from 'node:buffer';
 import { defineConfig } from 'vite';
 import eslint from 'vite-plugin-eslint';
 import express from 'express';
 import react from '@vitejs/plugin-react';
+import { brotliCompress } from 'zlib';
+import { promisify } from 'util';
+import gzipPlugin from 'rollup-plugin-gzip';
 
 import { APP_DATA } from './src/constants';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const brotliPromise = promisify(brotliCompress);
 
 /**
  * @returns {import('vite').Plugin}
@@ -113,7 +117,7 @@ const expressMiddleware = () => ({
         // 4. render the app HTML. This assumes entry-server.js's exported
         //     `render` function calls appropriate framework SSR APIs,
         //    e.g. ReactDOMServer.renderToString()
-        const { html, sheets } = await render(url);
+        const { html, sheets } = render(url);
 
         const script = `<script>var ${APP_DATA} = ${JSON.stringify(url)};</script>`;
     
@@ -139,53 +143,6 @@ const expressMiddleware = () => ({
 });
 
 /**
- * TODO:
- * 
- * @returns {import('vite').Plugin}
- */
-const ssrBuild = () => ({
-  name: 'vite-plugin-ssr-build',
-  apply: 'build',
-  transformIndexHtml(html) {
-    return html;
-  }
-  // transformIndexHtml(template, context) {
-  //   const url = path.dirname(context.path);
-  //   // DEBUG:
-  //   // console.group('vite-plugin-ssr-build');
-  //   // // console.log('template', template);
-  //   // console.log('context.path', context.path);
-  //   // console.log('url', url);
-  //   // console.groupEnd();
-
-  //   // const templates = 'src/pages';
-  //   // const base = '/';
-
-  //   // sync(`${templates}/**/index.html`).map((file) => {
-  //   //   const page = file.replace(templates, '');
-  //   //   const dir = path.dirname(page);
-  //   //   const pagePath = dir === base ? base : `${dir}/`;
-
-  //   //   // DEBUG:
-  //   //   console.log('pagePath', pagePath);
-  //   // });
-
-  //   const { render } = import('./src/entry-server.tsx');
-
-  //   const { html, sheets } = render(url);
-
-  //   const script = `<script>var ${APP_DATA} = ${JSON.stringify(url)};</script>`;
-
-  //   const renderedHTML = template
-  //     .replace('<!--app-script-->', () => script)
-  //     .replace('<!--app-styles-->', () => sheets)
-  //     .replace('<!--app-html-->', () => html);
-
-  //   return renderedHTML;
-  // }
-});
-
-/**
  * @param {string} pathToResolve
  * @returns {string}
  */
@@ -197,12 +154,20 @@ export default defineConfig({
   base: './',
   root: 'src',
   publicDir: resolvePath('dist'),
-  // assetsInclude: [
-  //   './src/assets/**/*.jpeg'
-  // ],
+  
   build: {
     outDir: '../dist',
-    emptyOutDir: true
+    emptyOutDir: true,
+    minify: 'terser',
+    rollupOptions: {
+      plugins: [
+        gzipPlugin({
+          customCompression: (content) => brotliPromise(Buffer.from(content)),
+          filter: /\.js/,
+          fileName: '.br'
+        })
+      ]
+    }
   },
   server: {
     host: true,
@@ -216,7 +181,6 @@ export default defineConfig({
     mimeSniffer([
       'application/json; charset=utf-8'
     ]),
-    ssrBuild(),
     computedStyleReload(),
     staticAssetReload(),
     eslint(),
