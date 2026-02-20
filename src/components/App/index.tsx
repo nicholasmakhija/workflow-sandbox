@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Banner } from '../Banner';
 import { HelloWorld } from '../HelloWorld';
 

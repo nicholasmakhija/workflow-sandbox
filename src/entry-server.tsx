@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import React, { StrictMode } from 'react';
 import { renderToString } from 'react-dom/server';
 import { getStyles } from '@n3e/styled';
 import { App } from './components/App';

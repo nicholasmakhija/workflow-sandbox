@@ -8,22 +8,26 @@ require('@babel/register')({
 });
 
 const { render } = require('./src/entry-server.tsx');
+const { APP_DATA } = require('./src/constants');
 
-const filePath = path.resolve(__dirname, './dist/index.html');
+const file = './dist/index.html'
+
+const filePath = path.resolve(__dirname, file);
+
+const url = '/';
 
 // read `index.html` file
 const rawHTML = fs.readFileSync(filePath, {
   encoding: 'utf8'
 });
 
-const { html, sheets } = render('/');
+const { html, sheets } = render(url);
+
+const script = `<script>var ${APP_DATA} = ${JSON.stringify(url)};</script>`;
 
 const renderedHTML = rawHTML
-    // .replace('<!--app-script-->', () => script)
+    .replace('<!--app-script-->', () => script)
     .replace('<!--app-styles-->', () => sheets)
     .replace('<!--app-html-->', () => html);
 
-console.log('render', render);
-// console.log('render', render);
-// console.log('rawHTML', rawHTML);
-console.log('renderedHTML', renderedHTML);
+fs.writeFileSync(file, renderedHTML);
