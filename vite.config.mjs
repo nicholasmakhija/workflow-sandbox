@@ -10,8 +10,6 @@ import { brotliCompress } from 'zlib';
 import { promisify } from 'util';
 import gzipPlugin from 'rollup-plugin-gzip';
 
-import { APP_DATA } from './src/constants';
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const brotliPromise = promisify(brotliCompress);
 
@@ -98,36 +96,21 @@ const expressMiddleware = () => ({
       if (isIgnorePath(url)) return next();
       
       try {
-        // 1. Read index.html
         const sourceHTML = fs.readFileSync(
           path.resolve(__dirname, 'src/index.html'),
           'utf-8'
         );
     
-        // 2. Apply Vite HTML transforms. This injects the Vite HMR client,
-        //    and also applies HTML transforms from Vite plugins, e.g. global
-        //    preambles from @vitejs/plugin-react
         const template = await server.transformIndexHtml(url, sourceHTML);
     
-        // 3. Load the server entry. ssrLoadModule automatically transforms
-        //    ESM source code to be usable in Node.js! There is no bundling
-        //    required, and provides efficient invalidation similar to HMR.
-        const { render } = await server.ssrLoadModule('./src/entry-server.tsx');
+        const { injectIntoHTML } = await server.ssrLoadModule('./src/entry-server.tsx');
     
-        // 4. render the app HTML. This assumes entry-server.js's exported
-        //     `render` function calls appropriate framework SSR APIs,
-        //    e.g. ReactDOMServer.renderToString()
-        const { html, sheets } = render(url);
-
-        const script = `<script>var ${APP_DATA} = ${JSON.stringify(url)};</script>`;
+        const renderedHTML = injectIntoHTML(template, {
+          currentPage: url,
+          isDark: false,
+          pages: {}
+        });
     
-        // 5. Inject the app-rendered HTML into the template.
-        const renderedHTML = template
-          .replace('<!--app-script-->', () => script)
-          .replace('<!--app-styles-->', () => sheets)
-          .replace('<!--app-html-->', () => html);
-    
-        // 6. Send the rendered HTML back
         res
           .status(200)
           .contentType('text/html')

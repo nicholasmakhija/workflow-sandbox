@@ -15,12 +15,22 @@ const root = `
   }
 `;
 
+const darkTheme = `
+--ws-background-primary: #1d2125;
+--ws-colour-content: #fff;
+`;
+
 const rootDarkTheme = `
   ${mq().prefersColorScheme('dark')} {
     ${style.root} {
-      --ws-background-primary: #1d2125;
-      --ws-colour-content: #fff;
+      ${darkTheme}
     }
+  }
+`;
+
+const classIsDarkMode = `
+  .isDarkMode {
+    ${darkTheme}
   }
 `;
 
@@ -57,6 +67,7 @@ export const AppRoot = styled
     boxSizing,
     root,
     rootDarkTheme,
+    classIsDarkMode,
     html,
     htmlAndBody,
     body

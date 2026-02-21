@@ -4,12 +4,16 @@ import { HelloWorld } from '../HelloWorld';
 
 import { AppRoot } from './elements';
 
-type AppProps = {
+export type AppProps = {
   currentPage: string;
+  isDark?: boolean;
+  pages?: Record<string, unknown>;
 };
 
 export const App = ({
-  currentPage
+  currentPage,
+  isDark,
+  pages
 }: AppProps) => {
   useEffect(() => {
     // eslint-disable-next-line no-console
@@ -19,7 +23,12 @@ export const App = ({
   return (
     <AppRoot>
       <Banner imageSource="assets/images/banner.jpeg" />
-      <h2>Current page is {currentPage}</h2>
+      <h2>App Props:</h2>
+      <ul>
+        <li>currentPage: {currentPage}</li>
+        <li>isDark: {isDark}</li>
+        <li>pages: {JSON.stringify(pages)}</li>
+      </ul>
       <nav>
         <ul>
           <li><a href="/">home</a></li>
