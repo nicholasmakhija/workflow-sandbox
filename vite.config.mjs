@@ -13,6 +13,8 @@ import gzipPlugin from 'rollup-plugin-gzip';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const brotliPromise = promisify(brotliCompress);
 
+import { getPages } from './server/get-pages';
+
 /**
  * @returns {import('vite').Plugin}
  */
@@ -40,34 +42,9 @@ const staticAssetReload = () => ({
     const { ws, watcher } = server;
     watcher.on('change', (file) => {
 
-      if (file.includes('asset')) {
+      if (file.includes('asset') || file.includes('pages')) {
         ws.send({ type: 'full-reload' });
       }
-    });
-  }
-});
-
-/**
- * Custom plugin for resolving requested content-type
- * 
- * @param {string[]} contentTypes
- * @returns {import('vite').Plugin}
- */
-const mimeSniffer = (contentTypes) => ({
-  name: 'vite-plugin-mime-sniffer',
-  configureServer(server) {
-    server.middlewares.use((req, res, next) => {
-      const requestedContentType = req.headers['content-type'];
-
-      if (contentTypes.includes(requestedContentType)) { 
-        const responseHeaderOverride = new Headers({
-          'Content-Type': requestedContentType
-        });
-
-        res.setHeaders(responseHeaderOverride);
-      }
-
-      return next();
     });
   }
 });
@@ -87,28 +64,34 @@ const expressMiddleware = () => ({
       '@react-refresh'
     ].some((item) => url.includes(item));
 
+    app.use('/assets/data/pages.json', (_req, res) => {
+      const pages = getPages();
+
+      res
+        .status(200)
+        .contentType('application/json; charset=utf-8')
+        .send({ pages });
+    });
+
     app.use('*all', async (req, res, next) => {
       const url = req.originalUrl;
 
-      // DEBUG:
-      // console.log('url', url);
-
-      if (isIgnorePath(url)) return next();
+      if (isIgnorePath(url)) {
+        return next();
+      }
       
       try {
         const sourceHTML = fs.readFileSync(
           path.resolve(__dirname, 'src/index.html'),
           'utf-8'
         );
-    
         const template = await server.transformIndexHtml(url, sourceHTML);
-    
-        const { injectIntoHTML } = await server.ssrLoadModule('./src/entry-server.tsx');
-    
+        const { injectIntoHTML } = await server.ssrLoadModule('./server/index.tsx');
+        const pages = getPages();
         const renderedHTML = injectIntoHTML(template, {
           currentPage: url,
           isDark: false,
-          pages: {}
+          pages: pages
         });
     
         res
@@ -134,7 +117,7 @@ const resolvePath = (pathToResolve) =>
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: './',
+  base: '/',
   root: 'src',
   publicDir: resolvePath('dist'),
   
@@ -161,9 +144,6 @@ export default defineConfig({
   },
   plugins: [
     expressMiddleware(),
-    mimeSniffer([
-      'application/json; charset=utf-8'
-    ]),
     computedStyleReload(),
     staticAssetReload(),
     eslint(),
