@@ -33,7 +33,7 @@ const createFile = (file, data) => {
   writeFileSync(file, data);
 };
 
-const file = './dist/index.html'
+const file = './dist/index.html';
 const filePath = resolve(__dirname, file);
 const pages = getPages();
 const rawHTML = readFileSync(filePath, {

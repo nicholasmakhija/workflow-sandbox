@@ -147,9 +147,9 @@ export default tseslint.config(
       eslint.configs.recommended
     ],
     languageOptions: {
-      globals: globals.browser
+      globals: globals.node
     },
-    files: ['scripts/*.js', '**/*.mjs'],
+    files: ['**/*.js', '**/*.mjs'],
     plugins: {
       '@stylistic': stylistic
     },

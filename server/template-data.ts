@@ -3,11 +3,11 @@ import { dirname } from 'node:path';
 
 export const getTemplateData = (
   templatesPath: string,
-  base: string
+  base = '/'
 ) => sync(`${templatesPath}/**/index.html`).map((file) => {
   const page = file.replace(templatesPath, '');
   const dir = dirname(page);
-  const path = dir === base ? base : `${dir}/`;
+  const path = dir === base ? dir : `${dir}/`;
 
   return {
     file,
@@ -16,4 +16,4 @@ export const getTemplateData = (
   };
 });
 
-export const templateData = getTemplateData('src/pages', '/');
+export const templateData = getTemplateData('src/pages');
