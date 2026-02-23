@@ -51,7 +51,7 @@ const staticAssetReload = () => ({
   configureServer(server) {
     const { ws, watcher } = server;
     const fullReload = (file) => {
-      if (file.includes('asset') || file.includes('pages')) {
+      if (file.includes('asset') || file.includes('.html')) {
         ws.send({ type: 'full-reload' });
       }
     };
