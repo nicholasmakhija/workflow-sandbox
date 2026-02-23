@@ -19,6 +19,13 @@ import { getPages } from './server/get-pages';
 // console.log('process.env.NODE_ENV', process.env.NODE_ENV);
 
 /**
+ * @param {string} pathToResolve
+ * @returns {string}
+ */
+const resolvePath = (pathToResolve) =>
+  path.resolve(__dirname, `./${pathToResolve}`);
+
+/**
  * @returns {import('vite').Plugin}
  */
 const computedStyleReload = () => ({
@@ -87,22 +94,24 @@ const expressMiddleware = () => ({
       }
       
       try {
+        const pages = getPages();
+        const isValidPath = pages[url];
+        const fileName = isValidPath ? 'index' : '404';
         const sourceHTML = fs.readFileSync(
-          path.resolve(__dirname, 'src/index.html'),
+          resolvePath(`src/${fileName}.html`),
           'utf-8'
         );
-        const template = await server.transformIndexHtml(url, sourceHTML);
-        const { injectIntoHTML } = await server.ssrLoadModule('./server/index.tsx');
-        const pages = getPages();
 
-        if (!pages[url]) {
+        if (!isValidPath) {
           res
             .status(404)
             .contentType('text/html')
-            .send('<h1>404</h1><p><strong>File not found</strong></p>');
+            .send(sourceHTML);
         }
-
-        const renderedHTML = injectIntoHTML(template, {
+        
+        const template = await server.transformIndexHtml(url, sourceHTML);
+        const { updateHTML } = await server.ssrLoadModule('./server/index.tsx');
+        const renderedHTML = updateHTML(template, {
           currentPage: url,
           isDark: false,
           pages: pages
@@ -121,13 +130,6 @@ const expressMiddleware = () => ({
     server.middlewares.use(app);
   }
 });
-
-/**
- * @param {string} pathToResolve
- * @returns {string}
- */
-const resolvePath = (pathToResolve) =>
-  path.resolve(__dirname, `./${pathToResolve}`);
 
 // https://vite.dev/config/
 export default defineConfig({

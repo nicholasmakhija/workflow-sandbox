@@ -13,7 +13,7 @@ require('@babel/register')({
 });
 
 const { getPages } = require('./server/get-pages.ts');
-const { injectIntoHTML } = require('./server/index.tsx');
+const { updateHTML } = require('./server/index.tsx');
 const { templateData } = require('./server/template-data.ts');
 
 /**
@@ -45,7 +45,7 @@ createFile('dist/assets/data/pages.json', JSON.stringify({
 }));
 
 templateData.forEach(({ page, path }) => {
-  const renderedHTML = injectIntoHTML(rawHTML, {
+  const renderedHTML = updateHTML(rawHTML, {
     currentPage: path,
     isDark: false,
     pages

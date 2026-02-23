@@ -20,7 +20,7 @@ export function render(props: AppProps) {
   return { html, sheets };
 };
 
-export function injectIntoHTML(
+export function updateHTML(
   source: string,
   data: AppProps
 ) {
