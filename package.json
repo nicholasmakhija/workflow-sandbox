@@ -10,7 +10,7 @@
     "vite:build": "vite build",
     "node:build": "node prerender",
     "build": "run-s clean vite:build copy node:build",
-    "start": "npm-s clean vite"
+    "start": "run-s clean vite"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
