@@ -7,6 +7,7 @@ import tseslint from 'typescript-eslint';
 import tslint from '@typescript-eslint/eslint-plugin';
 import { defineConfig } from 'eslint/config';
 
+/** @type {import('eslint/config').Config['rules']} */
 const commonRules = {
   'no-console': 1,
   'eol-last': ['error', 'always'],
@@ -15,11 +16,15 @@ const commonRules = {
   '@stylistic/comma-dangle': ['error', 'never'],
   '@stylistic/indent': ['error', 2, {
     ignoredNodes: ['TSTypeParameterInstantiation'], // FIXME:
+    MemberExpression: 1,
     SwitchCase: 1
   }],
   '@stylistic/keyword-spacing': ['error', {
     before: true,
     after: true
+  }],
+  '@stylistic/newline-per-chained-call': ['error', {
+    ignoreChainWithDepth: 2
   }],
   '@stylistic/no-multiple-empty-lines': ['error', {
     max: 1,
