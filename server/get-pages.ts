@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs';
 import minifier from 'html-minifier';
 
-import { templateData } from './template-data';
+import { getTemplateData } from './template-data';
 
 import type { Section, Page } from '../src/components/App';
 
@@ -21,7 +21,7 @@ const getSectionData = (heading: string): Section => ({
   text: getMatched(heading, />(.*?)<\//)
 });
 
-export const getPages = (): Record<string, Page> => templateData
+export const getPages = (): Record<string, Page> => getTemplateData()
   .map(({ file, path }) => {
     const raw = readFileSync(file, 'utf8');
     const order = +getMatched(raw, /<!--order:([^$]+?)-->/);

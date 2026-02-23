@@ -2,7 +2,7 @@ import { sync } from 'glob';
 import { dirname } from 'node:path';
 
 export const getTemplateData = (
-  templatesPath: string,
+  templatesPath = 'src/pages',
   base = '/'
 ) => sync(`${templatesPath}/**/index.html`).map((file) => {
   const page = file.replace(templatesPath, '');
@@ -16,4 +16,4 @@ export const getTemplateData = (
   };
 });
 
-export const templateData = getTemplateData('src/pages');
+export const templateData = getTemplateData();

@@ -43,12 +43,15 @@ const staticAssetReload = () => ({
   name: 'vite-plugin-static-asset-reload',
   configureServer(server) {
     const { ws, watcher } = server;
-    watcher.on('change', (file) => {
-
+    const fullReload = (file) => {
       if (file.includes('asset') || file.includes('pages')) {
         ws.send({ type: 'full-reload' });
       }
-    });
+    };
+
+    watcher.on('add', fullReload);
+    watcher.on('change', fullReload);
+    watcher.on('unlink', fullReload);
   }
 });
 
@@ -91,6 +94,14 @@ const expressMiddleware = () => ({
         const template = await server.transformIndexHtml(url, sourceHTML);
         const { injectIntoHTML } = await server.ssrLoadModule('./server/index.tsx');
         const pages = getPages();
+
+        if (!pages[url]) {
+          res
+            .status(404)
+            .contentType('text/html')
+            .send('<h1>404</h1><p><strong>File not found</strong></p>');
+        }
+
         const renderedHTML = injectIntoHTML(template, {
           currentPage: url,
           isDark: false,
