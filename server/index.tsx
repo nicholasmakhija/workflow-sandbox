@@ -43,7 +43,7 @@ export function injectIntoHTML(
     })();
   </script>
   `;
-  
+
   const renderedHTML = source
     .replace('<!--app-script-->', () => script)
     .replace('<!--app-styles-->', () => sheets)

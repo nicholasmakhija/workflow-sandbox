@@ -15,6 +15,9 @@ const brotliPromise = promisify(brotliCompress);
 
 import { getPages } from './server/get-pages';
 
+// DEBUG:
+// console.log('process.env.NODE_ENV', process.env.NODE_ENV);
+
 /**
  * @returns {import('vite').Plugin}
  */
@@ -125,6 +128,16 @@ export default defineConfig({
     outDir: '../dist',
     emptyOutDir: true,
     minify: 'terser',
+    terserOptions: {
+      ecma: 2022,
+      mangle: {
+        toplevel: true
+      },
+      compress: {
+        toplevel: true,
+        drop_console: true
+      }
+    },
     rollupOptions: {
       plugins: [
         gzipPlugin({

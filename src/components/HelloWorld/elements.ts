@@ -25,5 +25,5 @@ export const HelloWorldTitle = styled.h1<HelloWorldTitleProps>({
     borderStyle: 'dashed',
     borderWidth: '2px',
     borderColor: 'currentColor'
-  } 
+  }
 });

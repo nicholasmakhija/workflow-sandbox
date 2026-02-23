@@ -3,16 +3,14 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "clean:bin": "rimraf ./bin",
-    "clean:dist": "rimraf ./dist",
-    "clean": "run-p --silent clean:**",
+    "clean": "rimraf ./dist",
     "copy": "copyfiles -u 1 \"src/assets/**/*.*\" dist",
+    "lint": "eslint",
     "vite": "vite --port 8250",
     "vite:build": "vite build",
-    "bundle": "npm-run-all -s clean vite:build copy",
-    "build:ssr": "npm run bundle && node prerender",
-    "build": "NODE_ENV=production run-s bundle",
-    "start": "npm-run-all -s clean -p vite"
+    "node:build": "node prerender",
+    "build": "run-s clean vite:build copy node:build",
+    "start": "npm-s clean vite"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
@@ -21,9 +19,7 @@
     "@babel/preset-typescript": "^7.28.5",
     "@babel/register": "^7.28.6",
     "@eslint/js": "^9.21.0",
-    "@stylistic/eslint-plugin": "^4.2.0",
-    "@stylistic/eslint-plugin-jsx": "^4.2.0",
-    "@stylistic/eslint-plugin-ts": "^4.2.0",
+    "@stylistic/eslint-plugin": "^5.9.0",
     "@types/express": "^5.0.6",
     "@types/html-minifier": "^4.0.6",
     "@types/node": "^25.2.2",

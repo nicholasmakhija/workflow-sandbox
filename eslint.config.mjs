@@ -3,17 +3,16 @@ import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import stylistic from '@stylistic/eslint-plugin';
-import stylisticJsx from '@stylistic/eslint-plugin-jsx';
-import stylisticTs from '@stylistic/eslint-plugin-ts';
 import tseslint from 'typescript-eslint';
-import tslint from  '@typescript-eslint/eslint-plugin';
+import tslint from '@typescript-eslint/eslint-plugin';
+import { defineConfig } from 'eslint/config';
 
 const commonRules = {
   'no-console': 1,
   'eol-last': ['error', 'always'],
 
-  '@stylistic/arrow-parens': ['error'],
-  '@stylistic/comma-dangle': ['error'],
+  '@stylistic/arrow-parens': ['error', 'always'],
+  '@stylistic/comma-dangle': ['error', 'never'],
   '@stylistic/indent': ['error', 2, {
     ignoredNodes: ['TSTypeParameterInstantiation'], // FIXME:
     SwitchCase: 1
@@ -27,15 +26,17 @@ const commonRules = {
     maxBOF: 0,
     maxEOF: 1
   }],
+  '@stylistic/no-multi-spaces': 'error',
   '@stylistic/quotes': [2, 'single'],
   '@stylistic/semi': [2, 'always'],
   '@stylistic/space-before-blocks': ['error', 'always']
 };
 
-export default tseslint.config(
+export default defineConfig([
   {
     extends: [
       eslint.configs.recommended,
+      stylistic.configs.recommended,
       tseslint.configs.strictTypeChecked,
       tseslint.configs.stylisticTypeChecked
     ],
@@ -44,7 +45,6 @@ export default tseslint.config(
       parserOptions: {
         project: true,
         // projectService: true,
-        // @ts-ignore
         tsconfigRootDir: import.meta.dirname
       }
     },
@@ -53,11 +53,8 @@ export default tseslint.config(
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
       '@typescript-eslint': tslint,
-      '@stylistic': stylistic,
-      '@stylistic/jsx': stylisticJsx,
-      '@stylistic/ts': stylisticTs
+      '@stylistic': stylistic
     },
-    // @ts-ignore
     rules: {
       ...commonRules,
 
@@ -66,28 +63,40 @@ export default tseslint.config(
         allowConstantExport: true
       }],
   
-      '@stylistic/jsx-closing-bracket-location': [1, 'line-aligned'],
+      '@stylistic/jsx-closing-bracket-location': ['error', {
+        selfClosing: 'line-aligned',
+        nonEmpty: 'line-aligned'
+      }],
+      '@stylistic/jsx-closing-tag-location': ['error', 'line-aligned'],
       '@stylistic/jsx-quotes': ['error', 'prefer-double'],
-      '@stylistic/jsx/jsx-curly-spacing': [2, 'never'],
-      '@stylistic/jsx/jsx-equals-spacing': [2, 'never'],
-      '@stylistic/jsx/jsx-max-props-per-line': [2, {
+      '@stylistic/jsx-curly-spacing': ['error', 'never', {
+        allowMultiline: false,
+        spacing: {
+          objectLiterals: 'never'
+        }
+      }],
+      '@stylistic/jsx-equals-spacing': ['error', 'never'],
+      '@stylistic/jsx-max-props-per-line': ['error', {
         maximum: {
           single: 2,
           multi: 1
         }
       }],
-      '@stylistic/jsx/jsx-pascal-case': [2, {
+      '@stylistic/jsx-one-expression-per-line': ['error', { 
+        allow: 'non-jsx'
+      }],
+      // FIXME: below not required in `.tsx` as camel case not recognised as JSX?
+      '@stylistic/jsx-pascal-case': [2, {
         allowNamespace: true  
       }],
-      '@stylistic/jsx/jsx-props-no-multi-spaces': 2,
       // FIXME:
-      // '@stylistic/jsx/jsx-tag-spacing': ['error', { 
+      // '@stylistic/jsx-tag-spacing': ['error', { 
       //   closingSlash: 'never',
       //   beforeSelfClosing: 'never',
       //   afterOpening: 'never',
       //   beforeClosing: 'proportional-always'
       // }],
-      '@stylistic/jsx/jsx-wrap-multilines': [2, {
+      '@stylistic/jsx-wrap-multilines': [2, {
         declaration: 'parens-new-line',
         assignment: 'parens-new-line',
         return: 'parens-new-line',
@@ -98,8 +107,12 @@ export default tseslint.config(
         propertyValue: 'parens-new-line'
       }],
 
-      '@stylistic/ts/member-delimiter-style': ['error', {
+      '@stylistic/member-delimiter-style': ['error', {
         singleline: {
+          delimiter: 'semi',
+          requireLast: true
+        },
+        multiline: {
           delimiter: 'semi',
           requireLast: true
         }
@@ -153,6 +166,7 @@ export default tseslint.config(
     plugins: {
       '@stylistic': stylistic
     },
-    rules: commonRules
+    rules: commonRules,
+    ignores: ['./dist/**']
   }
-);
+]);

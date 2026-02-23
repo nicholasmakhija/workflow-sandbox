@@ -13,7 +13,7 @@ require('@babel/register')({
 });
 
 const { getPages } = require('./server/get-pages.ts');
-const { injectIntoHTML } = require('./src/entry-server.tsx');
+const { injectIntoHTML } = require('./server/index.tsx');
 const { templateData } = require('./server/template-data.ts');
 
 /**

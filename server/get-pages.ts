@@ -7,7 +7,7 @@ import { templateData } from './template-data';
 import type { Section, Page } from '../src/components/App';
 
 const getMatched = (
-  str: string, 
+  str: string,
   regex: RegExp
 ) => {
   const matchedArray = str.match(regex);
@@ -26,7 +26,7 @@ export const getPages = (): Record<string, Page> => templateData
     const raw = readFileSync(file, 'utf8');
     const order = +getMatched(raw, /<!--order:([^$]+?)-->/);
     const title = getMatched(raw, /<h1>([^$]+?)<\/h1>/);
-    
+
     // for all h2 and h3 use /<h[2-3] id="(.*?)">([^$]+?)<\/h[2-3]>/g
     const headings = raw.match(/<h2 id="(.*?)">([^$]+?)<\/h2>/g) || [];
     const sections = headings.map(getSectionData);
@@ -34,7 +34,7 @@ export const getPages = (): Record<string, Page> => templateData
       collapseWhitespace: true,
       removeComments: true
     });
-  
+
     return {
       order: order,
       page: {
